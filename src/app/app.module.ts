@@ -1,5 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { LuxonDateAdapter, MatLuxonDateModule } from '@angular/material-luxon-adapter';
+import { DateAdapter } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,8 +21,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ProblemDescriptionFormComponent } from './components/problem-description-form/problem-description-form.component';
 import { LocaleSelectorModalComponent } from './modals/locale-selector-modal/locale-selector-modal.component';
 import { LocaleSelectorComponent } from './components/locale-selector/locale-selector.component';
-import { LuxonDateAdapter, MatLuxonDateModule } from '@angular/material-luxon-adapter';
-import { DateAdapter } from '@angular/material/core';
+import { tokenRouterListener } from './shared/token.router.listener';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,12 @@ import { DateAdapter } from '@angular/material/core';
       provide: DateAdapter,
       useClass: LuxonDateAdapter,
     },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: tokenRouterListener,
+      deps: [Router],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
 })
