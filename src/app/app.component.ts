@@ -44,16 +44,16 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.authorized$
-    //   .pipe(
-    //     filter((c) => c),
-    //     first()
-    //   )
-    //   .subscribe(() => {
-    //     this.bottomSheet.open(IntroductionBottomSheetComponent, {
-    //       backdropClass: 'blurred-backdrop',
-    //     });
-    //   });
+    this.authorized$
+      .pipe(
+        filter((c) => c),
+        first()
+      )
+      .subscribe(() => {
+        this.bottomSheet.open(IntroductionBottomSheetComponent, {
+          backdropClass: 'blurred-backdrop',
+        });
+      });
 
     this.progress = this.progressBarService.getProgressValue();
     // this.dialog.show();
