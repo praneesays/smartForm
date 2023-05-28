@@ -1,0 +1,2320 @@
+<div class="stepper h-100">
+  <mat-stepper
+    (selectionChange)="onStepSelectionChange($event)"
+    class="flex-grow-1 w-100 h-100"
+    linear="false"
+    #stepper
+    [orientation]="(stepperOrientation | async)!"
+  >
+    <mat-step
+      [stepControl]="complaintReportingFormGroup"
+      [editable]="!complaintSubmitted"
+      [completed]="complaintSubmitted"
+      class="w-75 h-100"
+    >
+      <form
+        [formGroup]="complaintReportingFormGroup"
+        class="w-100 h-100 d-flex flex-column gap-2"
+      >
+        <ng-template matStepLabel>Preliminary Information</ng-template>
+
+        <div class="flex-grow-1">
+          <div>
+            <h2>What specific issue or concern would you like to report?</h2>
+            <mat-chip-listbox
+              aria-label="Complaint Report selection"
+              formControlName="complaintReportType"
+              [multiple]="true"
+            >
+              <mat-chip-option
+                [value]="ComplaintReportTypes.ProductQualityComplaint"
+                >Product Quality Complaint</mat-chip-option
+              >
+              <mat-chip-option [value]="ComplaintReportTypes.AdverseEvent"
+                >Adverse Event - Medical Concern- If this issue affected
+                person's health then select Adverse Event</mat-chip-option
+              >
+              <mat-chip-option [value]="ComplaintReportTypes.HelpWithAProduct"
+                >Help with a product</mat-chip-option
+              >
+            </mat-chip-listbox>
+          </div>
+
+          <div
+            *ngIf="
+              !complaintReportingFormGroup.controls.complaintReportType.value
+            "
+            class="d-flex align-items-center justify-content-center m-5 p-2 border rounded-3 shadow-lg min-height-300 empty-selection"
+          >
+            <h2>
+              There has been no selection made for reporting a specific issue or
+              concern.
+            </h2>
+          </div>
+
+          <!-- <hr /> -->
+          <ng-container
+            *ngIf="
+              complaintReportingFormGroup.controls.complaintReportType.value
+            "
+          >
+            <div class="mt-3">
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label
+                  >Please select a product for which you want to report an
+                  event?</mat-label
+                >
+                <mat-select formControlName="product">
+                  <mat-option value="One-Press Device"
+                    >One-Press Device</mat-option
+                  >
+                  <mat-option value="Prefilled Syringe"
+                    >Prefilled Syringe</mat-option
+                  >
+                  <mat-option value="Autoinjector">Autoinjector</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- <div *ngIf="complaintReportingFormGroup.controls.product.value"> -->
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label
+                  >Please select a brand for which you want to report an
+                  event?</mat-label
+                >
+                <mat-select formControlName="brand">
+                  <mat-option value="Stelara">Stelara</mat-option>
+                  <mat-option value="Simponi">Simponi</mat-option>
+                  <mat-option value="Remicade">Remicade</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- <div *ngIf="complaintReportingFormGroup.controls.brand.value"> -->
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label
+                  >Please select a strength for which you want to report an
+                  event?</mat-label
+                >
+                <mat-select formControlName="strength">
+                  <mat-option value="50.00 MG">50.00 MG</mat-option>
+                  <mat-option value="5 doses of 0.50 mL"
+                    >5 doses of 0.50 mL</mat-option
+                  >
+                  <mat-option value="100.00 MG">100.00 MG</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- <div *ngIf="complaintReportingFormGroup.controls.strength.value"> -->
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label
+                  >Please select a country for which you want to report an
+                  event?</mat-label
+                >
+                <mat-select formControlName="purchasedCountry">
+                  <mat-option
+                    *ngFor="let country of countries"
+                    [value]="country"
+                    >{{ country }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- <div *ngIf="complaintReportingFormGroup.controls.purchasedCountry.value"> -->
+            <div>
+              <!-- <mat-form-field class="default-control-width mb-2"> -->
+              <!-- <mat-label>Are you reporting the complaint from the same country?</mat-label> -->
+              <div>
+                <label
+                  >Are you reporting the complaint from the same country?</label
+                >
+              </div>
+              <mat-radio-group
+                aria-label="Are you reporting the complaint from the same country?"
+                color="primary"
+                formControlName="sameCountryReport"
+              >
+                <mat-radio-button value="Yes">Yes</mat-radio-button>
+                <mat-radio-button value="No">No</mat-radio-button>
+              </mat-radio-group>
+              <!-- </mat-form-field> -->
+            </div>
+
+            <div
+              *ngIf="
+                complaintReportingFormGroup.controls.sameCountryReport.value &&
+                complaintReportingFormGroup.controls.sameCountryReport.value ===
+                  'No'
+              "
+              class="mt-2"
+            >
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label
+                  >Please select a country for which you want to report an
+                  event?</mat-label
+                >
+                <mat-select formControlName="reportedCountry">
+                  <mat-option
+                    *ngFor="let country of countries"
+                    [value]="country"
+                    >{{ country }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div
+              *ngIf="
+                (complaintReportingFormGroup.controls.sameCountryReport.value &&
+                  complaintReportingFormGroup.controls.sameCountryReport
+                    .value === 'Yes') ||
+                complaintReportingFormGroup.controls.reportedCountry?.value
+              "
+              class="mt-2"
+            >
+              <h4>
+                Which part of the product you want to report the complaint for?
+              </h4>
+
+              <div *ngFor="let question of imageHotspotValues">
+                <ng-container *ngIf="question.type === 'image-map'">
+                  <label *ngIf="question.questionText">{{
+                    question.questionText
+                  }}</label>
+                  <app-image-map
+                    [imageSrc]="question.imageUrl"
+                    [areas]="question.areas"
+                  ></app-image-map>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end w-100">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="nextStep()"
+            [disabled]="!complaintReportingFormGroup.valid"
+          >
+            Continue <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+      <!-- <form [formGroup]="initialReportingFormGroup">
+        <ng-template matStepLabel>Preliminary Information</ng-template>
+
+        <div>
+          <h2 class="mb-0">
+            Thank you for contacting Janssen about your product.
+          </h2>
+          <h2>
+            Please fill out the fields below regarding your product issue. What
+            best describes you?
+          </h2>
+          <mat-chip-listbox
+            aria-label="User role selection"
+            formControlName="userType"
+          >
+            <mat-chip-option [value]="UserTypes.Patient"
+              >Patient/Customer</mat-chip-option
+            >
+            <mat-chip-option [value]="UserTypes.Physician"
+              >Physician</mat-chip-option
+            >
+            <mat-chip-option [value]="UserTypes.Nurse">Nurse</mat-chip-option>
+            <mat-chip-option [value]="UserTypes.Pharmacist"
+              >Pharmacist</mat-chip-option
+            >
+            <mat-chip-option [value]="UserTypes.OtherHealthCareProfessional"
+              >Other Health Care Professional</mat-chip-option
+            >
+            <mat-chip-option [value]="UserTypes.Lawyer">Lawyer</mat-chip-option>
+            <mat-chip-option [value]="UserTypes.JnjEmployee"
+              >J&J Employee</mat-chip-option
+            >
+            <mat-chip-option [value]="UserTypes.Other">Other</mat-chip-option>
+            <mat-chip-option [value]="UserTypes.Unwilling"
+              >Unwilling/Unable to answer</mat-chip-option
+            >
+          </mat-chip-listbox>
+        </div>
+
+        <hr />
+        <div>
+          <h2>Initial Reporter</h2>
+
+          <mat-form-field class="default-control-width mb-2">
+            <mat-label>Do we have permission to contact you to follow up on this report?</mat-label>
+            <mat-select formControlName="permission">
+              <mat-option value="Yes">Yes</mat-option>
+              <mat-option value="No">No</mat-option>
+              <mat-option value="unwilling">Unable/Unwilling to answer</mat-option>
+            </mat-select>
+            <mat-hint>Note: If you would like a copy of this session, please provide contact information and email address.</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="initialReportingFormGroup.controls.permission.value && initialReportingFormGroup.controls.permission.value === 'Yes'" class="mt-3">
+          <h2>Enter Contact information below:</h2>
+
+          <div class="w-100" formGroupName="contactInformartion">
+            <div class="d-flex">
+              <mat-form-field
+                class="default-control-width"
+                appearance="outline"
+              >
+                <mat-label>Name</mat-label>
+                <input matInput placeholder="Name" formControlName="name" />
+              </mat-form-field>
+
+              <mat-form-field
+                class="default-control-width"
+                appearance="outline"
+              >
+                <mat-label>Facility Name</mat-label>
+                <input
+                  matInput
+                  placeholder="Facility Name"
+                  formControlName="facilityName"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="d-flex">
+              <mat-form-field
+                class="default-control-width"
+                appearance="outline"
+              >
+                <mat-label>Phone Number</mat-label>
+                <input
+                  matInput
+                  placeholder="Phone Number"
+                  formControlName="phoneNumber"
+                />
+              </mat-form-field>
+
+              <mat-form-field
+                class="default-control-width"
+                appearance="outline"
+              >
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="Email" formControlName="email" />
+              </mat-form-field>
+            </div>
+
+            <div class="d-flex">
+              <mat-form-field
+                class="default-control-width"
+                appearance="outline"
+              >
+                <mat-label>Address</mat-label>
+                <input
+                  matInput
+                  placeholder="Address"
+                  formControlName="address"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="initialReportingFormGroup.controls.permission.value">
+          <mat-form-field class="default-control-width">
+            <mat-label>What is the product?</mat-label>
+            <mat-select formControlName="product">
+              <mat-option value="1">Stelara Pre-Filled Syringe - Ultrasafe 45 mg</mat-option>
+              <mat-option value="2">Stelara Pre-Filled Syringe - Ultrasafe 90 mg</mat-option>
+              <mat-option value="3">Stelara Pre-Filled Syringe - Ultrasafe (unknown dose)</mat-option>
+              <mat-option value="4">Stelara Pre-Filled Syringe Trainer</mat-option>
+              <mat-option value="5">Simponi Pre-Filled Syringe - Ultrasafe 50 mg</mat-option>
+              <mat-option value="6">Simponi Pre-Filled Syringe - Ultrasafe 100mg</mat-option>
+              <mat-option value="7">Simponi Pre-Filled Syringe - Ultrasafe (unknown dose)</mat-option>
+              <mat-option value="8">Tremfya Pre-Filled Syringe - Ultrasafe 100 mg</mat-option>
+              <mat-option value="9">Tremfya Pre-Filled Syringe Trainer</mat-option>
+              <mat-option value="10">Unable/Unwilling to answer</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="mt-4 d-flex justify-content-end w-100">
+          <button
+            mat-raised-button
+            color="primary"
+            class="primary-icon-buttoon"
+            matStepperNext
+          >
+            Continue <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form> -->
+    </mat-step>
+    <mat-step
+      [stepControl]="userDetailsFormGroup"
+      [editable]="!complaintSubmitted"
+      [completed]="complaintSubmitted"
+      class="w-75 h-100"
+    >
+      <form
+        [formGroup]="userDetailsFormGroup"
+        class="w-100 h-100 d-flex flex-column gap-2"
+      >
+        <ng-template matStepLabel>User Details</ng-template>
+
+        <div class="flex-grow-1 mt-2">
+          <div>
+            <h2>What best describes you?</h2>
+            <mat-chip-listbox
+              aria-label="User role selection"
+              formControlName="userType"
+            >
+              <mat-chip-option [value]="UserTypes.Patient"
+                >Patient</mat-chip-option
+              >
+              <mat-chip-option [value]="UserTypes.HealthcareProfessional"
+                >Healthcare Professional</mat-chip-option
+              >
+              <mat-chip-option [value]="UserTypes.NonHealthcareProfessional"
+                >Non-Healthcare Professional
+                (Parent/Relative/Friend/Guardian)</mat-chip-option
+              >
+              <mat-chip-option [value]="UserTypes.Manufacturer"
+                >Manufacturer</mat-chip-option
+              >
+              <mat-chip-option [value]="UserTypes.Employees"
+                >Employees</mat-chip-option
+              >
+            </mat-chip-listbox>
+          </div>
+
+          <div
+            *ngIf="!userDetailsFormGroup.controls.userType.value"
+            class="d-flex align-items-center justify-content-center m-5 p-2 border rounded-3 shadow-lg min-height-300 empty-selection"
+          >
+            <h2>There has been no selection of role.</h2>
+          </div>
+
+          <div
+            *ngIf="
+              userDetailsFormGroup.controls.userType.value === UserTypes.Patient
+            "
+            class="mt-2"
+          >
+            <h2>PATIENT INFORMATION</h2>
+            <div formGroupName="patientInformation">
+              <div formGroupName="patient">
+                <div class="d-flex w-100 gap-2">
+                  <div class="w-25">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Title</mat-label>
+                      <mat-select formControlName="title">
+                        <mat-option
+                          *ngFor="let option of titleOptions"
+                          [value]="option"
+                          >{{ option }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>First Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="First Name"
+                        formControlName="firstName"
+                      />
+                    </mat-form-field>
+                  </div>
+
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Last Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="Last Name"
+                        formControlName="lastName"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Occupation</mat-label>
+                    <input
+                      matInput
+                      placeholder="Occupation"
+                      formControlName="occupation"
+                    />
+                  </mat-form-field>
+                </div>
+
+                <div formGroupName="contactInformation">
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 1</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 1"
+                          formControlName="addressLine1"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 2</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 2"
+                          formControlName="addressLine2"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>City</mat-label>
+                        <input
+                          matInput
+                          placeholder="City"
+                          formControlName="city"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Country</mat-label>
+                        <mat-select formControlName="country">
+                          <mat-option
+                            *ngFor="let country of countries"
+                            [value]="country"
+                            >{{ country }}</mat-option
+                          >
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Postal Code</mat-label>
+                        <input
+                          matInput
+                          placeholder="Postal Code"
+                          formControlName="postalCode"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>State</mat-label>
+                        <input
+                          matInput
+                          placeholder="State"
+                          formControlName="state"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Telephone</mat-label>
+                        <input
+                          matInput
+                          placeholder="Telephone"
+                          formControlName="telephone"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Email Address</mat-label>
+                        <input
+                          matInput
+                          placeholder="Email Address"
+                          formControlName="emailAddress"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex w-100 gap-2">
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Date of Birth</mat-label>
+                      <input
+                        matInput
+                        [matDatepicker]="dobPicker"
+                        placeholder="Date of Birth"
+                        formControlName="dateOfBirth"
+                      />
+                      <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                      <mat-datepicker-toggle
+                        matIconSuffix
+                        [for]="dobPicker"
+                      ></mat-datepicker-toggle>
+                      <mat-datepicker #dobPicker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Gender (at birth)</mat-label>
+                      <mat-select formControlName="gender">
+                        <mat-option
+                          *ngFor="let gender of genderOptions"
+                          [value]="gender"
+                          >{{ gender }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="d-flex w-100 gap-2">
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Age at Complaint</mat-label>
+                      <input
+                        matInput
+                        placeholder="Age at Complaint"
+                        formControlName="ageAtComplaint"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Height</mat-label>
+                      <input
+                        matInput
+                        placeholder="Height"
+                        formControlName="height"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Weight</mat-label>
+                      <input
+                        matInput
+                        placeholder="Weight"
+                        formControlName="weight"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  userDetailsFormGroup.controls.userType.value ===
+                    UserTypes.Patient ||
+                  userDetailsFormGroup.controls.userType.value ===
+                    UserTypes.HealthcareProfessional
+                "
+              >
+                <mat-form-field
+                  class="default-control-width mb-2"
+                  appearance="outline"
+                >
+                  <mat-label
+                    >Is the physician or treating HCP aware of the
+                    complaint?</mat-label
+                  >
+                  <mat-select formControlName="awareOfComplaint">
+                    <mat-option
+                      *ngFor="let option of physicianAwarenessValues"
+                      [value]="option"
+                      >{{ option }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div>
+                <mat-form-field
+                  class="default-control-width mb-2"
+                  appearance="outline"
+                >
+                  <mat-label
+                    >Does J & J have permission to contact you about this
+                    report?</mat-label
+                  >
+                  <mat-select formControlName="permissionToContact">
+                    <mat-option
+                      *ngFor="let option of permissionToContactValues"
+                      [value]="option"
+                      >{{ option }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div>
+                <mat-form-field
+                  class="default-control-width mb-2"
+                  appearance="outline"
+                >
+                  <mat-label
+                    >Does J & J have permission to contact your healthcare
+                    provider about this report?</mat-label
+                  >
+                  <mat-select formControlName="permissionToContactHCP">
+                    <mat-option
+                      *ngFor="let option of permissionToContactHCPValues"
+                      [value]="option"
+                      >{{ option }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div
+                formGroupName="patientMedicalHistory"
+                *ngIf="showMedicalHistory"
+              >
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Medical history of the patient</mat-label>
+                    <textarea
+                      matInput
+                      placeholder="Medical History"
+                      formControlName="medicalHistory"
+                    ></textarea>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Does the Patient have any allergies?</mat-label>
+                    <mat-select formControlName="allergies">
+                      <mat-option
+                        *ngFor="let option of allergyStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.allergies'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Provide details of the allergies</mat-label>
+                    <input
+                      matInput
+                      placeholder="Provide details of the allergies"
+                      formControlName="allergyDetails"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label
+                      >Was the drug abuse or illicit drug usage?</mat-label
+                    >
+                    <mat-select formControlName="drugAbuse">
+                      <mat-option
+                        *ngFor="let option of drugAbuseStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.drugAbuse'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label
+                      >Provide details of drug abuse or illicit drug
+                      usage</mat-label
+                    >
+                    <input
+                      matInput
+                      placeholder="Provide details of drug abuse or illicit drug usage"
+                      formControlName="drugAbuseDetails"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Does the Patient consume alchohol?</mat-label>
+                    <mat-select formControlName="alcoholConsumption">
+                      <mat-option
+                        *ngFor="let option of alcoholConsumptionStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.alcoholConsumption'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label
+                      >Provide details of alchohol consumption</mat-label
+                    >
+                    <input
+                      matInput
+                      placeholder="Provide details of alchohol consumption"
+                      formControlName="alcoholConsumptionDetails"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Does the patient smoke?</mat-label>
+                    <mat-select formControlName="smokingStatus">
+                      <mat-option
+                        *ngFor="let option of smokingStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.smokingStatus'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Provide details of cigarettes usage</mat-label>
+                    <input
+                      matInput
+                      placeholder="Provide details of cigarettes usage"
+                      formControlName="smokingDetails"
+                    />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            *ngIf="
+              userDetailsFormGroup.controls.userType.value !==
+                UserTypes.Patient &&
+              userDetailsFormGroup.controls.userType.value !== null
+            "
+            class="mt-2"
+          >
+            <h2>PATIENT AND REPORTER INFORMATION</h2>
+            <div formGroupName="patientReporterInformation">
+              <div formGroupName="patient">
+                <h4 class="fw-semibold">Patient Details</h4>
+                <div class="d-flex w-100 gap-2">
+                  <div class="w-25">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Title</mat-label>
+                      <mat-select formControlName="title">
+                        <mat-option
+                          *ngFor="let option of titleOptions"
+                          [value]="option"
+                          >{{ option }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>First Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="First Name"
+                        formControlName="firstName"
+                      />
+                    </mat-form-field>
+                  </div>
+
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Last Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="Last Name"
+                        formControlName="lastName"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Occupation</mat-label>
+                    <input
+                      matInput
+                      placeholder="Occupation"
+                      formControlName="occupation"
+                    />
+                  </mat-form-field>
+                </div>
+
+                <div formGroupName="contactInformation">
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 1</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 1"
+                          formControlName="addressLine1"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 2</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 2"
+                          formControlName="addressLine2"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>City</mat-label>
+                        <input
+                          matInput
+                          placeholder="City"
+                          formControlName="city"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Country</mat-label>
+                        <mat-select formControlName="country">
+                          <mat-option
+                            *ngFor="let country of countries"
+                            [value]="country"
+                            >{{ country }}</mat-option
+                          >
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Postal Code</mat-label>
+                        <input
+                          matInput
+                          placeholder="Postal Code"
+                          formControlName="postalCode"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>State</mat-label>
+                        <input
+                          matInput
+                          placeholder="State"
+                          formControlName="state"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Telephone</mat-label>
+                        <input
+                          matInput
+                          placeholder="Telephone"
+                          formControlName="telephone"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Email Address</mat-label>
+                        <input
+                          matInput
+                          placeholder="Email Address"
+                          formControlName="emailAddress"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex w-100 gap-2">
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Date of Birth</mat-label>
+                      <input
+                        matInput
+                        [matDatepicker]="dobPicker"
+                        formControlName="dateOfBirth"
+                      />
+                      <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                      <mat-datepicker-toggle
+                        matIconSuffix
+                        [for]="dobPicker"
+                      ></mat-datepicker-toggle>
+                      <mat-datepicker #dobPicker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Gender (at birth)</mat-label>
+                      <mat-select formControlName="gender">
+                        <mat-option
+                          *ngFor="let gender of genderOptions"
+                          [value]="gender"
+                          >{{ gender }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="d-flex w-100 gap-2">
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Age at Complaint</mat-label>
+                      <input
+                        matInput
+                        placeholder="Age at Complaint"
+                        formControlName="ageAtComplaint"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Height</mat-label>
+                      <input
+                        matInput
+                        placeholder="Height"
+                        formControlName="height"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Weight</mat-label>
+                      <input
+                        matInput
+                        placeholder="Weight"
+                        formControlName="weight"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div formGroupName="reporter">
+                <h4 class="fw-semibold">Reporter Details</h4>
+                <div class="d-flex w-100 gap-2">
+                  <div class="w-25">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Title</mat-label>
+                      <mat-select formControlName="title">
+                        <mat-option
+                          *ngFor="let option of titleOptions"
+                          [value]="option"
+                          >{{ option }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>First Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="First Name"
+                        formControlName="firstName"
+                      />
+                    </mat-form-field>
+                  </div>
+
+                  <div class="w-100">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Last Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="Last Name"
+                        formControlName="lastName"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div formGroupName="contactInformation">
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 1</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 1"
+                          formControlName="addressLine1"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 2</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 2"
+                          formControlName="addressLine2"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>City</mat-label>
+                        <input
+                          matInput
+                          placeholder="City"
+                          formControlName="city"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Country</mat-label>
+                        <mat-select formControlName="country">
+                          <mat-option
+                            *ngFor="let country of countries"
+                            [value]="country"
+                            >{{ country }}</mat-option
+                          >
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Postal Code</mat-label>
+                        <input
+                          matInput
+                          placeholder="Postal Code"
+                          formControlName="postalCode"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>State</mat-label>
+                        <input
+                          matInput
+                          placeholder="State"
+                          formControlName="state"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-2">
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Telephone</mat-label>
+                        <input
+                          matInput
+                          placeholder="Telephone"
+                          formControlName="telephone"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-100">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Email Address</mat-label>
+                        <input
+                          matInput
+                          placeholder="Email Address"
+                          formControlName="emailAddress"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <mat-form-field
+                  class="default-control-width mb-2"
+                  appearance="outline"
+                >
+                  <mat-label>Facility Name</mat-label>
+                  <input
+                    matInput
+                    placeholder="Permission to Contact"
+                    formControlName="facilityName"
+                  />
+                </mat-form-field>
+              </div>
+              <div>
+                <mat-form-field
+                  class="default-control-width mb-2"
+                  appearance="outline"
+                >
+                  <mat-label
+                    >Did the reporter administer the product?</mat-label
+                  >
+                  <mat-select formControlName="reporterAdministeredProduct">
+                    <mat-option
+                      *ngFor="let option of reporterAdministrationValues"
+                      [value]="option"
+                      >{{ option }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div>
+                <mat-form-field
+                  class="default-control-width mb-2"
+                  appearance="outline"
+                >
+                  <mat-label
+                    >Does J&J have permission to contact the
+                    reporter?</mat-label
+                  >
+                  <mat-select formControlName="permissionToContactReporter">
+                    <mat-option
+                      *ngFor="let option of permissionToContactReporterValues"
+                      [value]="option"
+                      >{{ option }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div
+                formGroupName="patientMedicalHistory"
+                *ngIf="showMedicalHistory"
+              >
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Medical history of the patient</mat-label>
+                    <textarea
+                      matInput
+                      placeholder="Medical History"
+                      formControlName="medicalHistory"
+                    ></textarea>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Does the Patient have any allergies?</mat-label>
+                    <mat-select formControlName="allergies">
+                      <mat-option
+                        *ngFor="let option of allergyStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.allergies'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Provide details of the allergies</mat-label>
+                    <input
+                      matInput
+                      placeholder="Provide details of the allergies"
+                      formControlName="allergyDetails"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label
+                      >Was the drug abuse or illicit drug usage?</mat-label
+                    >
+                    <mat-select formControlName="drugAbuse">
+                      <mat-option
+                        *ngFor="let option of drugAbuseStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.drugAbuse'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label
+                      >Provide details of drug abuse or illicit drug
+                      usage</mat-label
+                    >
+                    <input
+                      matInput
+                      placeholder="Provide details of drug abuse or illicit drug usage"
+                      formControlName="drugAbuseDetails"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Does the Patient consume alchohol?</mat-label>
+                    <mat-select formControlName="alcoholConsumption">
+                      <mat-option
+                        *ngFor="let option of alcoholConsumptionStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.alcoholConsumption'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label
+                      >Provide details of alchohol consumption</mat-label
+                    >
+                    <input
+                      matInput
+                      placeholder="Provide details of alchohol consumption"
+                      formControlName="alcoholConsumptionDetails"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Does the patient smoke?</mat-label>
+                    <mat-select formControlName="smokingStatus">
+                      <mat-option
+                        *ngFor="let option of smokingStatusValues"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    userDetailsFormGroup.get(
+                      'patientInformation.patientMedicalHistory.smokingStatus'
+                    )?.value === 'Yes'
+                  "
+                >
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Provide details of cigarettes usage</mat-label>
+                    <input
+                      matInput
+                      placeholder="Provide details of cigarettes usage"
+                      formControlName="smokingDetails"
+                    />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 d-flex justify-content-between w-100">
+          <button mat-stroked-button color="secondary" matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-raised-button color="primary" matStepperNext>
+            Continue <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+          </button>
+        </div>
+
+        <!-- <mat-accordion class="accordion-headers-align">
+          <mat-expansion-panel
+            [expanded]="personalInformationStep === 0"
+            (opened)="personalInformationStep = 0"
+            hideToggle
+            formGroupName="personalData"
+            (closed)="
+              personalInformationStep =
+                personalInformationStep === 0 ? null : personalInformationStep
+            "
+          >
+            <mat-expansion-panel-header
+              [class.invalid]="
+                isExpansionStepInvalid(
+                  personalInformationStep,
+                  0,
+                  personalInformationFormGroup.controls.personalData
+                )
+              "
+            >
+              <mat-panel-title> Personal Data </mat-panel-title>
+              <mat-panel-description>
+                <mat-icon>account_circle</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div>
+              <mat-form-field class="default-control-width">
+                <mat-label>First Name</mat-label>
+                <input
+                  matInput
+                  placeholder="First Name"
+                  formControlName="firstName"
+                />
+              </mat-form-field>
+
+              <mat-form-field class="default-control-width">
+                <mat-label>Last Name</mat-label>
+                <input
+                  matInput
+                  placeholder="Last Name"
+                  formControlName="lastName"
+                />
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field class="default-control-width">
+                <mat-label>What is your birthdate?</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="birthdate"
+                  autocomplete="bday"
+                />
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="mt-1">
+              <mat-form-field class="default-control-width">
+                <mat-label>What is your sex?</mat-label>
+                <mat-select formControlName="sex">
+                  <mat-option value="Male">Male</mat-option>
+                  <mat-option value="Female">Female</mat-option>
+                  <mat-option value="Other">Other</mat-option>
+                  <mat-option value="Unspecified"
+                    >Prefer not to answer</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+
+              <ng-container
+                *ngIf="
+                  personalInformationFormGroup.controls.personalData.controls
+                    .sex.value &&
+                  personalInformationFormGroup.controls.personalData.controls
+                    .sex.value !== 'Male'
+                "
+              >
+                <mat-form-field class="default-control-width">
+                  <mat-label>Are you currently pregnant?</mat-label>
+                  <mat-select formControlName="pregnant">
+                    <mat-option value="Yes">Yes</mat-option>
+                    <mat-option value="No">No</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
+            </div>
+
+            <mat-action-row class="justify-content-start">
+              <div class="mt-4 d-flex justify-content-between w-100">
+                <button mat-stroked-button color="secondary" matStepperPrevious>
+                  <mat-icon>arrow_back</mat-icon> Back
+                </button>
+
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="personalInformationStep = 1"
+                >
+                  Continue <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
+            </mat-action-row>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel
+            [expanded]="personalInformationStep === 1"
+            (opened)="personalInformationStep = 1"
+            hideToggle
+            formGroupName="physicalAddress"
+            (closed)="
+              personalInformationStep =
+                personalInformationStep === 1 ? null : personalInformationStep
+            "
+          >
+            <mat-expansion-panel-header
+              [class.invalid]="
+                isExpansionStepInvalid(
+                  personalInformationStep,
+                  1,
+                  personalInformationFormGroup.controls.physicalAddress
+                )
+              "
+            >
+              <mat-panel-title> Physical Address </mat-panel-title>
+              <mat-panel-description>
+                <mat-icon>map</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div>
+              <mat-form-field class="default-control-width">
+                <mat-label>Street Address</mat-label>
+                <input
+                  matInput
+                  placeholder="Street Address"
+                  formControlName="streetAddress"
+                />
+              </mat-form-field>
+              <mat-form-field class="default-control-width">
+                <mat-label>Street Address 2</mat-label>
+                <input
+                  matInput
+                  placeholder="Street Address 2"
+                  formControlName="streetAddress2"
+                />
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field class="default-control-width">
+                <mat-label>City</mat-label>
+                <input matInput placeholder="City" formControlName="city" />
+              </mat-form-field>
+              <mat-form-field class="default-control-width">
+                <mat-label>State</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  formControlName="stateGroup"
+                  required
+                  [matAutocomplete]="autoGroup"
+                  formControlName="state"
+                />
+                <mat-autocomplete #autoGroup="matAutocomplete">
+                  <mat-optgroup
+                    *ngFor="let group of stateGroupOptions$ | async"
+                    [label]="group.letter"
+                  >
+                    <mat-option *ngFor="let name of group.names" [value]="name">
+                      {{ name }}
+                    </mat-option>
+                  </mat-optgroup>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field class="default-control-width">
+                <mat-label>Zip/Postal Code</mat-label>
+                <input
+                  matInput
+                  placeholder="Zip/Postal Code"
+                  formControlName="zipPostal"
+                />
+              </mat-form-field>
+            </div>
+            <mat-action-row class="justify-content-start">
+              <div class="mt-4 d-flex justify-content-between w-100">
+                <button
+                  mat-stroked-button
+                  color="secondary"
+                  (click)="personalInformationStep = 0"
+                >
+                  <mat-icon>arrow_back</mat-icon> Back
+                </button>
+                <button mat-raised-button color="primary" matStepperNext>
+                  Continue <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
+            </mat-action-row>
+          </mat-expansion-panel>
+        </mat-accordion> -->
+      </form>
+    </mat-step>
+    <mat-step
+      [stepControl]="productDetailsFormGroup"
+      (interacted)="onProblemSummarySubmitted()"
+      [editable]="!complaintSubmitted"
+      [completed]="complaintSubmitted"
+      class="w-75 h-100"
+    >
+      <form
+        [formGroup]="productDetailsFormGroup"
+        class="w-100 h-100 d-flex flex-column gap-2"
+      >
+        <ng-template matStepLabel>Product Details</ng-template>
+
+        <div class="flex-grow-1 mt-2">
+          <div>
+            <mat-form-field
+              class="default-control-width mb-2"
+              appearance="outline"
+            >
+              <mat-label
+                >Did the patient take the product as directed?</mat-label
+              >
+              <mat-select formControlName="tookProductAsDirected">
+                <mat-option value="Yes">Yes</mat-option>
+                <mat-option value="No">No</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field
+              class="default-control-width mb-2"
+              appearance="outline"
+            >
+              <mat-label>Who administered the Product? </mat-label>
+              <mat-select formControlName="administeredBy">
+                <mat-option
+                  *ngFor="let option of administeredByOptions"
+                  [value]="option"
+                  >{{ option }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div formGroupName="concomitantMedication">
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label>Concomitant Medication Status</mat-label>
+                <mat-select formControlName="status">
+                  <mat-option
+                    *ngFor="let option of concomitantMedicationStatusOptions"
+                    [value]="option"
+                    >{{ option }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <ng-container
+              *ngIf="
+                productDetailsFormGroup.get('concomitantMedication.status')
+                  ?.value === 'Yes'
+              "
+            >
+              <div formGroupName="details">
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Product Name</mat-label>
+                    <input
+                      matInput
+                      placeholder="Product Name"
+                      formControlName="productName"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Formulation</mat-label>
+                    <input
+                      matInput
+                      placeholder="Formulation"
+                      formControlName="formulation"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Indication</mat-label>
+                    <input
+                      matInput
+                      placeholder="Indication"
+                      formControlName="indication"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Route of Administration</mat-label>
+                    <mat-select formControlName="routeOfAdministration">
+                      <mat-option
+                        *ngFor="let option of routeOfAdministrationOptions"
+                        [value]="option"
+                        >{{ option }}</mat-option
+                      >
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Start Date</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="startDatePicker"
+                      placeholder="Start Date"
+                      formControlName="startDate"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="startDatePicker"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #startDatePicker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>End Date</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="endDatePicker"
+                      placeholder="End Date"
+                      formControlName="endDate"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="endDatePicker"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #endDatePicker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Dose</mat-label>
+                    <input matInput placeholder="Dose" formControlName="dose" />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Strength</mat-label>
+                    <input
+                      matInput
+                      placeholder="Strength"
+                      formControlName="strength"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Frequency</mat-label>
+                    <input
+                      matInput
+                      placeholder="Frequency"
+                      formControlName="frequency"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field
+                    class="default-control-width mb-2"
+                    appearance="outline"
+                  >
+                    <mat-label>Frequency Time</mat-label>
+                    <input
+                      matInput
+                      placeholder="Frequency Time"
+                      formControlName="frequencyTime"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <app-image-upload
+                    formControlName="optionalImage"
+                    text="Upload images (optional)"
+                  ></app-image-upload>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-between">
+          <button mat-stroked-button color="secondary" matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-raised-button color="primary" matStepperNext>
+            Continue <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+      <!-- <form [formGroup]="problemSummaryFormGroup">
+        <ng-template matStepLabel>Problem Summary</ng-template>
+        <div>
+          <mat-form-field style="min-width: 400px; width: 80%">
+            <mat-label>Describe your issue</mat-label>
+            <textarea matInput formControlName="issueVerbatim"></textarea>
+            <mat-hint
+              >Please include any details that may be relevant.</mat-hint
+            >
+          </mat-form-field>
+        </div>
+        <div style="margin-top: 10px">
+          <app-image-upload
+            formControlName="images"
+            text="Upload images (optional)"
+          ></app-image-upload>
+        </div>
+        <div class="mt-4 d-flex justify-content-between">
+          <button mat-stroked-button color="secondary" matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-raised-button color="primary" matStepperNext>
+            Continue <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form> -->
+    </mat-step>
+    <mat-step
+      [stepControl]="complaintDetailsFormGroup"
+      [editable]="true"
+      [editable]="!complaintSubmitted"
+      [completed]="complaintSubmitted"
+      class="w-75 h-100"
+    >
+      <form
+        [formGroup]="complaintDetailsFormGroup"
+        class="w-100 h-100 d-flex flex-column gap-2"
+      >
+        <ng-template matStepLabel>Complaint Details</ng-template>
+        <div class="flex-grow-1 mt-2">
+          <div>
+            <mat-form-field
+              class="default-control-width mb-2"
+              appearance="outline"
+            >
+              <mat-label
+                >Was this complaint reported from a J&J program?</mat-label
+              >
+              <mat-select formControlName="reportedFromJNJProgram">
+                <mat-option value="Yes">Yes</mat-option>
+                <mat-option value="No">No</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <ng-container
+            *ngIf="
+              complaintDetailsFormGroup.get('reportedFromJNJProgram')?.value ===
+              'Yes'
+            "
+          >
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label>Study Program</mat-label>
+                <input
+                  matInput
+                  placeholder="Study Program"
+                  formControlName="studyProgram"
+                />
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label>Site Number</mat-label>
+                <input
+                  matInput
+                  placeholder="Site Number"
+                  formControlName="siteNumber"
+                />
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label>Subject Number</mat-label>
+                <input
+                  matInput
+                  placeholder="Subject Number"
+                  formControlName="subjectNumber"
+                />
+              </mat-form-field>
+            </div>
+          </ng-container>
+
+          <div>
+            <mat-form-field
+              class="default-control-width mb-2"
+              appearance="outline"
+            >
+              <mat-label
+                >Please Briefly Describe the Complaint details</mat-label
+              >
+              <mat-hint
+                >Describe the sequence of events and include the dose
+                missed/received.</mat-hint
+              >
+              <textarea
+                matInput
+                placeholder="Complaint Description"
+                formControlName="complaintDescription"
+              ></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="mt-4 d-flex justify-content-between">
+          <button mat-stroked-button color="secondary" matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-raised-button color="primary" matStepperNext>
+            Continue <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+      <!-- <form [formGroup]="problemDetailsQuestionsFormGroup">
+        <ng-template matStepLabel>Problem Details</ng-template>
+        <div style="float: right">
+          <button mat-flat-button color="warn" (click)="resetProblemDetails()">
+            <mat-icon>refresh</mat-icon> Reset
+          </button>
+        </div>
+        <div *ngFor="let question of problemDetailsQuestions">
+          <ng-container *ngIf="question.type === 'free-text'">
+            <mat-form-field style="min-width: 400px; width: 80%">
+              <mat-label>{{ question.questionText }}</mat-label>
+              <textarea matInput [formControlName]="question.id"></textarea>
+              <mat-hint>{{ question.helpText }}</mat-hint>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="question.type === 'multiple-choice'">
+            <mat-form-field style="width: 100%">
+              <mat-label>{{ question.questionText }}</mat-label>
+              <mat-select [formControlName]="question.id">
+                <mat-option
+                  *ngFor="let opt of question.options"
+                  [value]="opt.name"
+                  >{{ opt.name }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="question.type === 'image-map'">
+            <label *ngIf="question.questionText">{{
+              question.questionText
+            }}</label>
+            <app-image-map
+              [imageSrc]="question.imageUrl"
+              [areas]="question.areas"
+              [formControlName]="question.id"
+            ></app-image-map>
+          </ng-container>
+          <ng-container *ngIf="question.type === 'date-picker'">
+            <mat-form-field appearance="fill">
+              <mat-label>{{ question.questionText }}</mat-label>
+              <input matInput [matDatepicker]="picker" />
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </ng-container>
+        </div>
+
+        <div *ngIf="problemDetailsFormGroup.controls.done.value">
+          <h3>That's all we need to know for now.</h3>
+
+          <mat-form-field style="width: 100%">
+            <mat-label
+              >If needed, would it be okay for us to follow up with further
+              questions later?</mat-label
+            >
+            <mat-select formControlName="followUpOkay">
+              <mat-option value="Yes">Yes</mat-option>
+              <mat-option value="No">No</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-between">
+          <button mat-stroked-button color="secondary" matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-raised-button color="primary" matStepperNext>
+            Continue <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form> -->
+    </mat-step>
+    <mat-step
+      [editable]="!complaintSubmitted"
+      [completed]="complaintSubmitted"
+      class="w-75 h-100"
+    >
+      <ng-template matStepLabel>Done</ng-template>
+      <div class="w-100 h-100 d-flex flex-column gap-2">
+        <div
+          *ngIf="!complaintSubmitted"
+          class="h-100 d-flex flex-column align-items-center gap-2"
+        >
+          <div class="flex-grow-1 d-flex flex-column align-items-center">
+            <div class="text-center" style="width: 40%">
+              JnJ will handle this adverse event, contact information, and
+              personal information provided in accordance with its Privacy
+              Policy. You can view Janssen's Privacy Policy by clicking on the
+              link <a href="#"> Janssen's Privacy Policy</a>
+            </div>
+            <mat-checkbox
+              class="example-margin"
+              color="primary"
+              [(ngModel)]="privacyPolicyChecked"
+              >I acknowledge Janssen's Privacy Policy</mat-checkbox
+            >
+          </div>
+
+          <div class="mt-4 d-flex justify-content-center w-100 gap-5">
+            <button mat-stroked-button color="secondary" matStepperPrevious>
+              <mat-icon>arrow_back</mat-icon> Back
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submitComplaint()"
+              [disabled]="!privacyPolicyChecked"
+            >
+              Submit <mat-icon iconPositionEnd>done</mat-icon>
+            </button>
+          </div>
+        </div>
+        <!-- <div *ngIf="!complaintSubmitted">
+        <div style="text-align: left">
+          <h3><strong>Product</strong></h3>
+        </div>
+
+        <div style="text-align: left; margin-left: 0">
+          <table>
+            <tr>
+              <td><strong>Product: </strong></td>
+              <td>{{ productFormGroup.controls["brand"].value }}</td>
+            </tr>
+
+            <ng-container
+              *ngIf="productFormGroup.controls['lotNumber'].value as lotNumber"
+            >
+              <tr>
+                <td><strong>Batch : </strong></td>
+                <td>{{ lotNumber }}</td>
+              </tr>
+            </ng-container>
+          </table>
+        </div>
+        <div>
+          <div style="text-align: left; margin-top: 35px">
+            <h3><strong>Details</strong></h3>
+          </div>
+          <div style="text-align: left; margin-left: 0" ng-if>
+            <table>
+              <thead>
+                <tr>
+                  <th>Question</th>
+                  <th>Response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let question of problemDetailsQuestions">
+                  <td>{{ question.questionText }}</td>
+                  <td>
+                    {{ problemDetailsQuestionsFormGroup.value[question.id] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 d-flex justify-content-between">
+            <button mat-stroked-button color="secondary" matStepperPrevious>
+              <mat-icon>arrow_back</mat-icon> Back
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submitComplaint()"
+            >
+              Submit <mat-icon>done</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div> -->
+        <div
+          *ngIf="complaintSubmitted"
+          class="d-flex flex-column align-items-center text-align-center mt-4"
+        >
+          <h3><strong>Thanks for submitting your case!</strong></h3>
+          <p>We will contact you if any additional information is required.</p>
+        </div>
+      </div>
+    </mat-step>
+
+    <!-- <mat-step *ngIf="problemDetailsDone">
+  <ng-template matStepLabel>Confirmation</ng-template>
+  <div style="text-align:center;margin-top: 50px;">
+    <h3><strong>Thanks for submitting the request, We will contact you if any additional information is required</strong></h3>
+  </div>
+
+</mat-step> -->
+  </mat-stepper>
+</div>
+
+<!-- <div class="mt-3">
+  <button mat-stroked-button color="secondary" [routerLink]="['']">
+    <mat-icon>arrow_back</mat-icon> Back to Homepage
+  </button>
+</div> -->

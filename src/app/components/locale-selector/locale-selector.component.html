@@ -1,0 +1,21 @@
+<form class="d-flex flex-column w-100 p-4" [formGroup]="localeForm">
+  <ng-container formGroupName="locale">
+    <mat-form-field appearance="outline">
+      <mat-label>Select Country</mat-label>
+      <mat-select formControlName="country" name="country">
+        <mat-option *ngFor="let country of countries" [value]="country.code">
+          {{ country.country }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Select Language</mat-label>
+      <mat-select formControlName="language" name="language" >
+        <mat-option *ngFor="let language of languages" [value]="language.code">
+          {{ language.language }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+</form>
