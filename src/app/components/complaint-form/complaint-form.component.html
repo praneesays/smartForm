@@ -18,33 +18,44 @@
       >
         <ng-template matStepLabel>Preliminary Information</ng-template>
 
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 bg-white rounded-3 shadow px-5 py-3">
           <div>
-            <h2>What specific issue or concern would you like to report?</h2>
-            <mat-chip-listbox
-              aria-label="Complaint Report selection"
-              formControlName="complaintReportType"
-              [multiple]="true"
-            >
-              <mat-chip-option
-                [value]="ComplaintReportTypes.ProductQualityComplaint"
-                >Product Quality Complaint</mat-chip-option
+            <h2>
+              What specific issue or concern would you like to report?
+              <span class="fs-6 fw-normal">Select all that apply</span>
+            </h2>
+
+            <div class="checkbox-container">
+              <mat-button-toggle-group
+                [multiple]="true"
+                name="complaintReportType"
+                formControlName="complaintReportType"
+                class="d-flex border-0 gap-3"
               >
-              <mat-chip-option [value]="ComplaintReportTypes.AdverseEvent"
-                >Adverse Event - Medical Concern- If this issue affected
-                person's health then select Adverse Event</mat-chip-option
-              >
-              <mat-chip-option [value]="ComplaintReportTypes.HelpWithAProduct"
-                >Help with a product</mat-chip-option
-              >
-            </mat-chip-listbox>
+                <mat-button-toggle
+                  *ngFor="let complaint of complaintType"
+                  [value]="complaint.value"
+                  aria-label="Complaint Report selection"
+                  class="border border-1 rounded-3"
+                >
+                  <div
+                    class="checkbox-label d-flex flex-column align-items-center justify-content-center w-100 h-100"
+                  >
+                    <h2 class="mb-1 text-wrap">{{ complaint.name }}</h2>
+                    <p class="w-100 text-wrap lh-base m-0">
+                      {{ complaint.definition }}
+                    </p>
+                  </div>
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
           </div>
 
           <div
             *ngIf="
               !complaintReportingFormGroup.controls.complaintReportType.value
             "
-            class="d-flex align-items-center justify-content-center m-5 p-2 border rounded-3 shadow-lg min-height-300 empty-selection"
+            class="d-flex align-items-center justify-content-center p-2 border rounded-3 min-height-300 empty-selection"
           >
             <h2>
               There has been no selection made for reporting a specific issue or
@@ -58,7 +69,7 @@
               complaintReportingFormGroup.controls.complaintReportType.value
             "
           >
-            <div class="mt-3">
+            <!-- <div class="mt-4">
               <mat-form-field
                 class="default-control-width mb-2"
                 appearance="outline"
@@ -77,30 +88,1176 @@
                   <mat-option value="Autoinjector">Autoinjector</mat-option>
                 </mat-select>
               </mat-form-field>
+            </div> -->
+
+            <h2 class="mt-4 mb-2">
+              Please select a product for which you want to report an event?
+            </h2>
+            <div class="d-flex flex-column vertical-tabs-section mb-4">
+              <div
+                ngbNav
+                #nav="ngbNav"
+                class="nav-pills vertical-tabs align-items-start"
+                (navChange)="onTabsChange()"
+              >
+                <ng-container ngbNavItem="onePressDevice">
+                  <button ngbNavLink>One-Press Device</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="onePressDevice 1"
+                          formControlName="product"
+                        />
+                        <img
+                        ngSrc="./assets/products/onePressDevice-1.PNG" width="200" height="150"
+                          alt="onePressDevice 1"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="prefilledSyringe">
+                  <button ngbNavLink>Prefilled Syringe</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="prefilledSyringe 1"
+                          formControlName="product"
+                        />
+                        <img
+                        ngSrc="./assets/products/prefilledSyringe-1.PNG" width="200" height="150"
+                          alt="prefilledSyringe 1"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="prefilledSyringe 2"
+                          formControlName="product"
+                        />
+                        <img
+                        ngSrc="./assets/products/prefilledSyringe-2.PNG" width="200" height="150"
+                          alt="prefilledSyringe 2"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="prefilledSyringe 3"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/prefilledSyringe-3.PNG" width="200" height="150"
+                          alt="prefilledSyringe 3"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="autoinjector">
+                  <button ngbNavLink>Autoinjector</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="autoinjector 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/autoinjector-1.PNG" width="200" height="150"
+                          alt="autoinjector 1"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="spray">
+                  <button ngbNavLink>Spray</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="spray 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/spray-1.PNG" width="200" height="150"
+                          alt="spray 1"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="tablet">
+                  <button ngbNavLink>Tablet</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-1.PNG" width="200" height="150"
+                          alt="tablet 1"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 2"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-2.PNG" width="200" height="150"
+                          alt="tablet 2"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 3"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-3.PNG" width="200" height="150"
+                          alt="tablet 3"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 4"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-4.PNG" width="200" height="150"
+                          alt="tablet 4"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 5"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-5.PNG" width="200" height="150"
+                          alt="tablet 5"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 6"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-6.PNG" width="200" height="150"
+                          alt="tablet 6"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 7"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-7.PNG" width="200" height="150"
+                          alt="tablet 7"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="tablet 8"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/tablet-8.PNG" width="200" height="150"
+                          alt="tablet 8"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="vial">
+                  <button ngbNavLink>Vial</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-1.PNG" width="200" height="150"
+                          alt="vial 1"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 2"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-2.PNG" width="200" height="150"
+                          alt="vial 2"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 3"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-3.PNG" width="200" height="150"
+                          alt="vial 3"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 4"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-4.PNG" width="200" height="150"
+                          alt="vial 4"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 5"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-5.PNG" width="200" height="150"
+                          alt="vial 5"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 6"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-6.PNG" width="200" height="150"
+                          alt="vial 6"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 7"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-7.PNG" width="200" height="150"
+                          alt="vial 7"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 8"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-8.PNG" width="200" height="150"
+                          alt="vial 8"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="vial 9"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/vial-9.PNG" width="200" height="150"
+                          alt="vial 9"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="injectionKit">
+                  <button ngbNavLink>Injection Kit</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="injectionKit 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/injectionKit-1.PNG" width="200" height="150"
+                          alt="injectionKit 1"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="cream">
+                  <button ngbNavLink>Cream</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="cream 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/cream-1.PNG" width="200" height="150"
+                          alt="cream 1"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="cream 2"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/cream-2.PNG" width="200" height="150"
+                          alt="cream 2"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="cream 3"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/cream-3.PNG" width="200" height="150"
+                          alt="cream 3"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="patch">
+                  <button ngbNavLink>Patch</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="patch 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/patch-1.PNG" width="200" height="150"
+                          alt="patch 1"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="ampule">
+                  <button ngbNavLink>Ampule</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="ampule 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/ampule-1.PNG" width="200" height="150"
+                          alt="ampule 1"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem="other">
+                  <button ngbNavLink>Other</button>
+                  <ng-template ngbNavContent>
+                    <div class="d-flex flex-wrap gap-4 my-2">
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="other 1"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/other-1.PNG" width="200" height="150"
+                          alt="other 1"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="other 2"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/other-2.PNG" width="200" height="150"
+                          alt="other 2"
+                          class="product-image"
+                        />
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="product"
+                          value="other 3"
+                          formControlName="product"
+                        />
+                        <img
+                          ngSrc="./assets/products/other-3.PNG" width="200" height="150"
+                          alt="other 3"
+                          class="product-image"
+                        />
+                      </label>
+                    </div>
+                  </ng-template>
+                </ng-container>
+              </div>
+
+              <div class="border rounded-3 w-100 mt-2">
+                <h2 class="px-3 pt-2 mb-0" *ngIf="nav.activeId">
+                  Select a brand below
+                </h2>
+                <div [ngbNavOutlet]="nav"></div>
+              </div>
             </div>
 
+            <div class="chip-options-end chip-options-sections mb-2">
+              <h2 class="mb-1">Alternative design</h2>
+              <h2 class="mb-1">
+                Please select a product for which you want to report an event?
+              </h2>
+              <mat-chip-listbox
+                aria-label="Product selection" formControlName="brand"
+                class="mb-2"
+              >
+                <mat-chip-option [value]="ProductTypes.OnePressDevice"
+                  >One-Press Device</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.PrefilledSyringe"
+                  >Prefilled Syringe</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Autoinjector"
+                  >Autoinjector</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Spray"
+                  >Spray</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Tablet"
+                  >Tablet</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Vial"
+                  >Vial</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.InjectionKit"
+                  >Injection Kit</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Cream"
+                  >Cream</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Patch"
+                  >Patch</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Ampule"
+                  >Ampule</mat-chip-option
+                >
+                <mat-chip-option [value]="ProductTypes.Other"
+                  >Other</mat-chip-option
+                >
+              </mat-chip-listbox>
+
+              <div *ngIf="complaintReportingFormGroup.controls.brand.value" class="mb-3" style="background-color: #F4F3F6;box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;">
+                <h2 class="px-3 pt-2 mb-0 text-secondary">
+                  Select a brand below
+                </h2>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.OnePressDevice
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="onePressDevice 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/onePressDevice-1.PNG" width="200" height="150"
+                        alt="onePressDevice 1"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.PrefilledSyringe
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="prefilledSyringe 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/prefilledSyringe-1.PNG" width="200" height="150"
+                        alt="prefilledSyringe 1"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="prefilledSyringe 2"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/prefilledSyringe-2.PNG" width="200" height="150"
+                        alt="prefilledSyringe 2"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="prefilledSyringe 3"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/prefilledSyringe-3.PNG" width="200" height="150"
+                        alt="prefilledSyringe 3"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Autoinjector
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="autoinjector 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/autoinjector-1.PNG" width="200" height="150"
+                        alt="autoinjector 1"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Spray
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="spray 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/spray-1.PNG" width="200" height="150"
+                        alt="spray 1"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Tablet
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-1.PNG" width="200" height="150"
+                        alt="tablet 1"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 2"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-2.PNG" width="200" height="150"
+                        alt="tablet 2"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 3"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-3.PNG" width="200" height="150"
+                        alt="tablet 3"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 4"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-4.PNG" width="200" height="150"
+                        alt="tablet 4"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 5"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-5.PNG" width="200" height="150"
+                        alt="tablet 5"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 6"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-6.PNG" width="200" height="150"
+                        alt="tablet 6"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 7"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-7.PNG" width="200" height="150"
+                        alt="tablet 7"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="tablet 8"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/tablet-8.PNG" width="200" height="150"
+                        alt="tablet 8"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Vial
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-1.PNG" width="200" height="150"
+                        alt="vial 1"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 2"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-2.PNG" width="200" height="150"
+                        alt="vial 2"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 3"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-3.PNG" width="200" height="150"
+                        alt="vial 3"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 4"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-4.PNG" width="200" height="150"
+                        alt="vial 4"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 5"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-5.PNG" width="200" height="150"
+                        alt="vial 5"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 6"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-6.PNG" width="200" height="150"
+                        alt="vial 6"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 7"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-7.PNG" width="200" height="150"
+                        alt="vial 7"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 8"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-8.PNG" width="200" height="150"
+                        alt="vial 8"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="vial 9"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/vial-9.PNG" width="200" height="150"
+                        alt="vial 9"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.InjectionKit
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="injectionKit 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/injectionKit-1.PNG" width="200" height="150"
+                        alt="injectionKit 1"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Cream
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="cream 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/cream-1.PNG" width="200" height="150"
+                        alt="cream 1"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="cream 2"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/cream-2.PNG" width="200" height="150"
+                        alt="cream 2"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="cream 3"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/cream-3.PNG" width="200" height="150"
+                        alt="cream 3"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Patch
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="patch 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/patch-1.PNG" width="200" height="150"
+                        alt="patch 1"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Ampule
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="ampule 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/ampule-1.PNG" width="200" height="150"
+                        alt="ampule 1"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    complaintReportingFormGroup.controls.brand.value ===
+                    ProductTypes.Other
+                  "
+                >
+                  <div
+                    class="d-flex flex-wrap gap-4 my-2 border rounded-3 w-100 p-3"
+                  >
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="other 1"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/other-1.PNG" width="200" height="150"
+                        alt="other 1"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="other 2"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/other-2.PNG" width="200" height="150"
+                        alt="other 2"
+                        class="product-image"
+                      />
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="brand"
+                        value="other 3"
+                        class="mb-2"
+                      />
+                      <img
+                        ngSrc="./assets/products/other-3.PNG" width="200" height="150"
+                        alt="other 3"
+                        class="product-image"
+                      />
+                    </label>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container
+            *ngIf="complaintReportingFormGroup.controls.product.value"
+          >
             <!-- <div *ngIf="complaintReportingFormGroup.controls.product.value"> -->
-            <div>
+            <!-- <div>
               <mat-form-field
                 class="default-control-width mb-2"
                 appearance="outline"
               >
                 <mat-label
-                  >Please select a brand for which you want to report an
-                  event?</mat-label
+                  >Please select a brand for which you want to report an event?</mat-label
                 >
-                <mat-select formControlName="brand">
+                <mat-select class="mb-2">
                   <mat-option value="Stelara">Stelara</mat-option>
                   <mat-option value="Simponi">Simponi</mat-option>
                   <mat-option value="Remicade">Remicade</mat-option>
                 </mat-select>
               </mat-form-field>
-            </div>
+            </div> -->
 
             <!-- <div *ngIf="complaintReportingFormGroup.controls.brand.value"> -->
             <div>
               <mat-form-field
-                class="default-control-width mb-2"
+                class="default-control-width mb-3"
                 appearance="outline"
               >
                 <mat-label
@@ -163,10 +1320,10 @@
                 complaintReportingFormGroup.controls.sameCountryReport.value ===
                   'No'
               "
-              class="mt-2"
+              class="mt-3"
             >
               <mat-form-field
-                class="default-control-width mb-2"
+                class="default-control-width"
                 appearance="outline"
               >
                 <mat-label
@@ -183,15 +1340,29 @@
               </mat-form-field>
             </div>
 
-            <div
-              *ngIf="
-                (complaintReportingFormGroup.controls.sameCountryReport.value &&
-                  complaintReportingFormGroup.controls.sameCountryReport
-                    .value === 'Yes') ||
-                complaintReportingFormGroup.controls.reportedCountry?.value
-              "
-              class="mt-2"
-            >
+            <div class="mt-3">
+              <mat-form-field
+                class="default-control-width"
+                appearance="outline"
+              >
+                <mat-label>Please enter batch number</mat-label>
+                <input
+                  matInput
+                  placeholder="Please enter batch number"
+                  formControlName="lotNumber"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="showLotNumberHelp()"
+                  [attr.aria-label]="'Help finding this'"
+                >
+                  <mat-icon>help</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+
+            <div class="mt-2">
               <h4>
                 Which part of the product you want to report the complaint for?
               </h4>
@@ -215,6 +1386,7 @@
           <button
             mat-raised-button
             color="primary"
+            class="primary-btn"
             (click)="nextStep()"
             [disabled]="!complaintReportingFormGroup.valid"
           >
@@ -381,7 +1553,7 @@
       >
         <ng-template matStepLabel>User Details</ng-template>
 
-        <div class="flex-grow-1 mt-2">
+        <div class="flex-grow-1 bg-white rounded-3 shadow px-5 py-3 mt-2">
           <div>
             <h2>What best describes you?</h2>
             <mat-chip-listbox
@@ -409,7 +1581,7 @@
 
           <div
             *ngIf="!userDetailsFormGroup.controls.userType.value"
-            class="d-flex align-items-center justify-content-center m-5 p-2 border rounded-3 shadow-lg min-height-300 empty-selection"
+            class="d-flex align-items-center justify-content-center p-2 border rounded-3 min-height-300 empty-selection"
           >
             <h2>There has been no selection of role.</h2>
           </div>
@@ -423,8 +1595,8 @@
             <h2>PATIENT INFORMATION</h2>
             <div formGroupName="patientInformation">
               <div formGroupName="patient">
-                <div class="d-flex w-100 gap-2">
-                  <div class="w-25">
+                <div class="row">
+                  <div class="col-sm-12 col-lg-2">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -439,7 +1611,7 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-5">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -453,7 +1625,7 @@
                     </mat-form-field>
                   </div>
 
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-5">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -483,8 +1655,8 @@
                 </div>
 
                 <div formGroupName="contactInformation">
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -497,7 +1669,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -511,8 +1683,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -525,7 +1697,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -541,8 +1713,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -555,7 +1727,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -569,8 +1741,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -583,7 +1755,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -598,8 +1770,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="d-flex w-100 gap-2">
-                  <div class="w-100">
+                <div class="row">
+                  <div class="col-sm-12 col-lg-6">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -619,7 +1791,7 @@
                       <mat-datepicker #dobPicker></mat-datepicker>
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-6">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -635,8 +1807,8 @@
                     </mat-form-field>
                   </div>
                 </div>
-                <div class="d-flex w-100 gap-2">
-                  <div class="w-100">
+                <div class="row">
+                  <div class="col-sm-12 col-lg-4">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -649,7 +1821,7 @@
                       />
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-4">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -662,7 +1834,7 @@
                       />
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-4">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -737,6 +1909,177 @@
                     >
                   </mat-select>
                 </mat-form-field>
+              </div>
+              <div
+                formGroupName="hcp"
+                *ngIf="
+                  userDetailsFormGroup.get(
+                    'patientInformation.permissionToContactHCP'
+                  )?.value === 'Yes'
+                "
+              >
+                <h4 class="fw-semibold">Healthcare provider Details</h4>
+                <div class="row">
+                  <div class="col-sm-12 col-lg-2">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Title</mat-label>
+                      <mat-select formControlName="title">
+                        <mat-option
+                          *ngFor="let option of titleOptions"
+                          [value]="option"
+                          >{{ option }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-12 col-lg-5">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>First Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="First Name"
+                        formControlName="firstName"
+                      />
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-sm-12 col-lg-5">
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Last Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="Last Name"
+                        formControlName="lastName"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div formGroupName="contactInformation">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 1</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 1"
+                          formControlName="addressLine1"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Address Line 2</mat-label>
+                        <input
+                          matInput
+                          placeholder="Address Line 2"
+                          formControlName="addressLine2"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>City</mat-label>
+                        <input
+                          matInput
+                          placeholder="City"
+                          formControlName="city"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Country</mat-label>
+                        <mat-select formControlName="country">
+                          <mat-option
+                            *ngFor="let country of countries"
+                            [value]="country"
+                            >{{ country }}</mat-option
+                          >
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Postal Code</mat-label>
+                        <input
+                          matInput
+                          placeholder="Postal Code"
+                          formControlName="postalCode"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>State</mat-label>
+                        <input
+                          matInput
+                          placeholder="State"
+                          formControlName="state"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Telephone</mat-label>
+                        <input
+                          matInput
+                          placeholder="Telephone"
+                          formControlName="telephone"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                      <mat-form-field
+                        class="default-control-width mb-2"
+                        appearance="outline"
+                      >
+                        <mat-label>Email Address</mat-label>
+                        <input
+                          matInput
+                          placeholder="Email Address"
+                          formControlName="emailAddress"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div
                 formGroupName="patientMedicalHistory"
@@ -914,8 +2257,8 @@
             <div formGroupName="patientReporterInformation">
               <div formGroupName="patient">
                 <h4 class="fw-semibold">Patient Details</h4>
-                <div class="d-flex w-100 gap-2">
-                  <div class="w-25">
+                <div class="row">
+                  <div class="col-sm-12 col-lg-2">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -930,7 +2273,7 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-5">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -944,7 +2287,7 @@
                     </mat-form-field>
                   </div>
 
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-5">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -974,8 +2317,8 @@
                 </div>
 
                 <div formGroupName="contactInformation">
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -988,7 +2331,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1002,8 +2345,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1016,7 +2359,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1032,8 +2375,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1046,7 +2389,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1060,8 +2403,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1074,7 +2417,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1089,8 +2432,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="d-flex w-100 gap-2">
-                  <div class="w-100">
+                <div class="row">
+                  <div class="col-sm-12 col-lg-6">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1109,7 +2452,7 @@
                       <mat-datepicker #dobPicker></mat-datepicker>
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-6">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1125,8 +2468,8 @@
                     </mat-form-field>
                   </div>
                 </div>
-                <div class="d-flex w-100 gap-2">
-                  <div class="w-100">
+                <div class="row">
+                  <div class="col-sm-12 col-lg-4">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1139,7 +2482,7 @@
                       />
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-4">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1152,7 +2495,7 @@
                       />
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-4">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1169,8 +2512,8 @@
               </div>
               <div formGroupName="reporter">
                 <h4 class="fw-semibold">Reporter Details</h4>
-                <div class="d-flex w-100 gap-2">
-                  <div class="w-25">
+                <div class="row">
+                  <div class="col-sm-12 col-lg-2">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1185,7 +2528,7 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-5">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1199,7 +2542,7 @@
                     </mat-form-field>
                   </div>
 
-                  <div class="w-100">
+                  <div class="col-sm-12 col-lg-5">
                     <mat-form-field
                       class="default-control-width mb-2"
                       appearance="outline"
@@ -1215,8 +2558,8 @@
                 </div>
 
                 <div formGroupName="contactInformation">
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1229,7 +2572,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1243,8 +2586,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1257,7 +2600,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1273,8 +2616,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1287,7 +2630,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1301,8 +2644,8 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="d-flex w-100 gap-2">
-                    <div class="w-100">
+                  <div class="row">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1315,7 +2658,7 @@
                         />
                       </mat-form-field>
                     </div>
-                    <div class="w-100">
+                    <div class="col-sm-12 col-lg-6">
                       <mat-form-field
                         class="default-control-width mb-2"
                         appearance="outline"
@@ -1547,7 +2890,12 @@
           <button mat-stroked-button color="secondary" matStepperPrevious>
             <mat-icon>arrow_back</mat-icon> Back
           </button>
-          <button mat-raised-button color="primary" matStepperNext>
+          <button
+            mat-raised-button
+            color="primary"
+            class="primary-btn"
+            matStepperNext
+          >
             Continue <mat-icon iconPositionEnd>arrow_forward</mat-icon>
           </button>
         </div>
@@ -1762,260 +3110,6 @@
       </form>
     </mat-step>
     <mat-step
-      [stepControl]="productDetailsFormGroup"
-      (interacted)="onProblemSummarySubmitted()"
-      [editable]="!complaintSubmitted"
-      [completed]="complaintSubmitted"
-      class="w-75 h-100"
-    >
-      <form
-        [formGroup]="productDetailsFormGroup"
-        class="w-100 h-100 d-flex flex-column gap-2"
-      >
-        <ng-template matStepLabel>Product Details</ng-template>
-
-        <div class="flex-grow-1 mt-2">
-          <div>
-            <mat-form-field
-              class="default-control-width mb-2"
-              appearance="outline"
-            >
-              <mat-label
-                >Did the patient take the product as directed?</mat-label
-              >
-              <mat-select formControlName="tookProductAsDirected">
-                <mat-option value="Yes">Yes</mat-option>
-                <mat-option value="No">No</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field
-              class="default-control-width mb-2"
-              appearance="outline"
-            >
-              <mat-label>Who administered the Product? </mat-label>
-              <mat-select formControlName="administeredBy">
-                <mat-option
-                  *ngFor="let option of administeredByOptions"
-                  [value]="option"
-                  >{{ option }}</mat-option
-                >
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div formGroupName="concomitantMedication">
-            <div>
-              <mat-form-field
-                class="default-control-width mb-2"
-                appearance="outline"
-              >
-                <mat-label>Concomitant Medication Status</mat-label>
-                <mat-select formControlName="status">
-                  <mat-option
-                    *ngFor="let option of concomitantMedicationStatusOptions"
-                    [value]="option"
-                    >{{ option }}</mat-option
-                  >
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <ng-container
-              *ngIf="
-                productDetailsFormGroup.get('concomitantMedication.status')
-                  ?.value === 'Yes'
-              "
-            >
-              <div formGroupName="details">
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Product Name</mat-label>
-                    <input
-                      matInput
-                      placeholder="Product Name"
-                      formControlName="productName"
-                    />
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Formulation</mat-label>
-                    <input
-                      matInput
-                      placeholder="Formulation"
-                      formControlName="formulation"
-                    />
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Indication</mat-label>
-                    <input
-                      matInput
-                      placeholder="Indication"
-                      formControlName="indication"
-                    />
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Route of Administration</mat-label>
-                    <mat-select formControlName="routeOfAdministration">
-                      <mat-option
-                        *ngFor="let option of routeOfAdministrationOptions"
-                        [value]="option"
-                        >{{ option }}</mat-option
-                      >
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Start Date</mat-label>
-                    <input
-                      matInput
-                      [matDatepicker]="startDatePicker"
-                      placeholder="Start Date"
-                      formControlName="startDate"
-                    />
-                    <mat-datepicker-toggle
-                      matSuffix
-                      [for]="startDatePicker"
-                    ></mat-datepicker-toggle>
-                    <mat-datepicker #startDatePicker></mat-datepicker>
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>End Date</mat-label>
-                    <input
-                      matInput
-                      [matDatepicker]="endDatePicker"
-                      placeholder="End Date"
-                      formControlName="endDate"
-                    />
-                    <mat-datepicker-toggle
-                      matSuffix
-                      [for]="endDatePicker"
-                    ></mat-datepicker-toggle>
-                    <mat-datepicker #endDatePicker></mat-datepicker>
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Dose</mat-label>
-                    <input matInput placeholder="Dose" formControlName="dose" />
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Strength</mat-label>
-                    <input
-                      matInput
-                      placeholder="Strength"
-                      formControlName="strength"
-                    />
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Frequency</mat-label>
-                    <input
-                      matInput
-                      placeholder="Frequency"
-                      formControlName="frequency"
-                    />
-                  </mat-form-field>
-                </div>
-                <div>
-                  <mat-form-field
-                    class="default-control-width mb-2"
-                    appearance="outline"
-                  >
-                    <mat-label>Frequency Time</mat-label>
-                    <input
-                      matInput
-                      placeholder="Frequency Time"
-                      formControlName="frequencyTime"
-                    />
-                  </mat-form-field>
-                </div>
-                <div>
-                  <app-image-upload
-                    formControlName="optionalImage"
-                    text="Upload images (optional)"
-                  ></app-image-upload>
-                </div>
-              </div>
-            </ng-container>
-          </div>
-        </div>
-
-        <div class="mt-4 d-flex justify-content-between">
-          <button mat-stroked-button color="secondary" matStepperPrevious>
-            <mat-icon>arrow_back</mat-icon> Back
-          </button>
-          <button mat-raised-button color="primary" matStepperNext>
-            Continue <mat-icon iconPositionEnd>arrow_forward</mat-icon>
-          </button>
-        </div>
-      </form>
-      <!-- <form [formGroup]="problemSummaryFormGroup">
-        <ng-template matStepLabel>Problem Summary</ng-template>
-        <div>
-          <mat-form-field style="min-width: 400px; width: 80%">
-            <mat-label>Describe your issue</mat-label>
-            <textarea matInput formControlName="issueVerbatim"></textarea>
-            <mat-hint
-              >Please include any details that may be relevant.</mat-hint
-            >
-          </mat-form-field>
-        </div>
-        <div style="margin-top: 10px">
-          <app-image-upload
-            formControlName="images"
-            text="Upload images (optional)"
-          ></app-image-upload>
-        </div>
-        <div class="mt-4 d-flex justify-content-between">
-          <button mat-stroked-button color="secondary" matStepperPrevious>
-            <mat-icon>arrow_back</mat-icon> Back
-          </button>
-          <button mat-raised-button color="primary" matStepperNext>
-            Continue <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </div>
-      </form> -->
-    </mat-step>
-    <mat-step
       [stepControl]="complaintDetailsFormGroup"
       [editable]="true"
       [editable]="!complaintSubmitted"
@@ -2027,7 +3121,216 @@
         class="w-100 h-100 d-flex flex-column gap-2"
       >
         <ng-template matStepLabel>Complaint Details</ng-template>
-        <div class="flex-grow-1 mt-2">
+        <div class="flex-grow-1 bg-white rounded-3 shadow px-5 py-3 mt-2">
+          <div formGroupName="product">
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label
+                  >Did the patient take the product as directed?</mat-label
+                >
+                <mat-select formControlName="tookProductAsDirected">
+                  <mat-option value="Yes">Yes</mat-option>
+                  <mat-option value="No">No</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field
+                class="default-control-width mb-2"
+                appearance="outline"
+              >
+                <mat-label>Who administered the Product? </mat-label>
+                <mat-select formControlName="administeredBy">
+                  <mat-option
+                    *ngFor="let option of administeredByOptions"
+                    [value]="option"
+                    >{{ option }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div formGroupName="concomitantMedication">
+              <div>
+                <mat-form-field
+                  class="default-control-width mb-2"
+                  appearance="outline"
+                >
+                  <mat-label>Concomitant Medication Status</mat-label>
+                  <mat-select formControlName="status">
+                    <mat-option
+                      *ngFor="let option of concomitantMedicationStatusOptions"
+                      [value]="option"
+                      >{{ option }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <ng-container
+                *ngIf="
+                  complaintDetailsFormGroup.get(
+                    'product.concomitantMedication.status'
+                  )?.value === 'Yes'
+                "
+              >
+                <div formGroupName="details">
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Product Name</mat-label>
+                      <input
+                        matInput
+                        placeholder="Product Name"
+                        formControlName="productName"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Formulation</mat-label>
+                      <input
+                        matInput
+                        placeholder="Formulation"
+                        formControlName="formulation"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Indication</mat-label>
+                      <input
+                        matInput
+                        placeholder="Indication"
+                        formControlName="indication"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Route of Administration</mat-label>
+                      <mat-select formControlName="routeOfAdministration">
+                        <mat-option
+                          *ngFor="let option of routeOfAdministrationOptions"
+                          [value]="option"
+                          >{{ option }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Start Date</mat-label>
+                      <input
+                        matInput
+                        [matDatepicker]="startDatePicker"
+                        placeholder="Start Date"
+                        formControlName="startDate"
+                      />
+                      <mat-datepicker-toggle
+                        matSuffix
+                        [for]="startDatePicker"
+                      ></mat-datepicker-toggle>
+                      <mat-datepicker #startDatePicker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>End Date</mat-label>
+                      <input
+                        matInput
+                        [matDatepicker]="endDatePicker"
+                        placeholder="End Date"
+                        formControlName="endDate"
+                      />
+                      <mat-datepicker-toggle
+                        matSuffix
+                        [for]="endDatePicker"
+                      ></mat-datepicker-toggle>
+                      <mat-datepicker #endDatePicker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Dose</mat-label>
+                      <input
+                        matInput
+                        placeholder="Dose"
+                        formControlName="dose"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Strength</mat-label>
+                      <input
+                        matInput
+                        placeholder="Strength"
+                        formControlName="strength"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Frequency</mat-label>
+                      <input
+                        matInput
+                        placeholder="Frequency"
+                        formControlName="frequency"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field
+                      class="default-control-width mb-2"
+                      appearance="outline"
+                    >
+                      <mat-label>Frequency Time</mat-label>
+                      <input
+                        matInput
+                        placeholder="Frequency Time"
+                        formControlName="frequencyTime"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div class="mb-3">
+                    <app-image-upload
+                      formControlName="optionalImage"
+                      text="Upload images (optional)"
+                    ></app-image-upload>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
           <div>
             <mat-form-field
               class="default-control-width mb-2"
@@ -2113,7 +3416,12 @@
           <button mat-stroked-button color="secondary" matStepperPrevious>
             <mat-icon>arrow_back</mat-icon> Back
           </button>
-          <button mat-raised-button color="primary" matStepperNext>
+          <button
+            mat-raised-button
+            color="primary"
+            class="primary-btn"
+            matStepperNext
+          >
             Continue <mat-icon iconPositionEnd>arrow_forward</mat-icon>
           </button>
         </div>
@@ -2205,8 +3513,10 @@
           *ngIf="!complaintSubmitted"
           class="h-100 d-flex flex-column align-items-center gap-2"
         >
-          <div class="flex-grow-1 d-flex flex-column align-items-center">
-            <div class="text-center" style="width: 40%">
+          <div
+            class="flex-grow-1 bg-white rounded-3 shadow px-5 py-3 d-flex flex-column align-items-center mb-2"
+          >
+            <div class="text-center privacy-text">
               JnJ will handle this adverse event, contact information, and
               personal information provided in accordance with its Privacy
               Policy. You can view Janssen's Privacy Policy by clicking on the
@@ -2227,6 +3537,7 @@
             <button
               mat-raised-button
               color="primary"
+              class="primary-btn"
               (click)="submitComplaint()"
               [disabled]="!privacyPolicyChecked"
             >

@@ -10,7 +10,7 @@ import { environment } from "src/environments/environment";
 import { LotNumberHelpBottomSheetComponent } from "../..//bottom-sheets/lot-number-help-bottom-sheet/lot-number-help-bottom-sheet.component";
 import { Question } from "../../questions";
 import { IQuestionsRequest, IQuestionsRequestAnswer, QuestionsService } from "../../services/questions.service";
-import { IAddress, IContactData, IInitialReporting, IPersonalData, IPersonalInformation, IProblemSummary, IProductInformation, UserTypes, ComplaintReportTypes, IComplaintReporting, IPatientDetails, IReporterDetails, IProductDetails, IComplaintDetails, Country, SameCountryReportStatus, IUserDetails, IPatientInformation, IPatientReporterInformation, AlcoholConsumptionStatus, AllergyStatus, ContactPermission, ContactPermissionReporter, DrugAbuseStatus, Gender, IContactInformation, IPatientMedicalHistory, PhysicianAwareness, ReporterAdministration, SmokingStatus, Title, AdministeredBy, RouteOfAdministration, ConcomitantMedicationStatus, ConcomitantMedicationDetails, ConcomitantMedication, ContactPermissionHCP } from "../../types";
+import { IAddress, IContactData, IInitialReporting, IPersonalData, IPersonalInformation, IProblemSummary, IProductInformation, UserTypes, ProductTypes, ComplaintReportTypes, IComplaintReporting, IPatientDetails, IReporterDetails, IProductDetails, IComplaintDetails, Country, SameCountryReportStatus, IUserDetails, IPatientInformation, IPatientReporterInformation, AlcoholConsumptionStatus, AllergyStatus, ContactPermission, ContactPermissionReporter, DrugAbuseStatus, Gender, IContactInformation, IPatientMedicalHistory, PhysicianAwareness, ReporterAdministration, SmokingStatus, Title, AdministeredBy, RouteOfAdministration, ConcomitantMedicationStatus, ConcomitantMedicationDetails, ConcomitantMedication, ContactPermissionHCP, IHCPDetails } from "../../types";
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
@@ -47,6 +47,7 @@ interface IProblemDetailsWithDone {
 export class ComplaintFormComponent implements OnDestroy, OnInit {
   readonly UserTypes = UserTypes;
   readonly ComplaintReportTypes = ComplaintReportTypes;
+  readonly ProductTypes = ProductTypes;
 
   complaintSubmitted: boolean = false;
   readonly authorized$: Observable<boolean>;
@@ -64,8 +65,8 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
   imageHotspotValues: Question[] = [];
 
   readonly complaintReportingFormGroup: FormGroup<FormGroupType<IComplaintReporting>>;
+  // complaintReportingFormGroup: FormGroup<FormGroupType<IComplaintReporting>>;
   readonly userDetailsFormGroup: FormGroup<FormGroupType<IUserDetails>>;
-  readonly productDetailsFormGroup: FormGroup<FormGroupType<IProductDetails>>;
   readonly complaintDetailsFormGroup: FormGroup<FormGroupType<IComplaintDetails>>;
 
   readonly stepperOrientation: Observable<StepperOrientation>;
@@ -197,6 +198,26 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
   privacyPolicyChecked =  false;
 
   showMedicalHistory: boolean = false;
+  
+  complaintType = [
+    {
+      name: "Product Quality Complaint",
+      definition : "Concerns about the quality, safety, or effectiveness of a drug product",
+      value: this.ComplaintReportTypes.ProductQualityComplaint
+    },
+    {
+      name: "Adverse Event",
+      definition : "Medical Concern- If this issue affected person's health then select Adverse Event",
+      value: this.ComplaintReportTypes.AdverseEvent
+    },
+    {
+      name: "Product Information",
+      definition : "Comprehensive details and specifications about a particular product",
+      value: this.ComplaintReportTypes.ProductInformation
+    }
+  ];
+
+  selectedValues: string[] = [];
 
   constructor(
     private readonly bottomSheet: MatBottomSheet,
@@ -241,10 +262,11 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
     this.complaintReportingFormGroup = fb.group<FormGroupType<IComplaintReporting>>({
       complaintReportType: fb.control<ComplaintReportTypes | null>(null, { nonNullable: true, validators: [Validators.required] }),
 
-      product: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-      brand: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+      product: fb.control<ProductTypes | null>(null, { nonNullable: true, validators: [Validators.required] }),
+      brand: fb.control<ProductTypes | null>(ProductTypes.OnePressDevice, { nonNullable: true, validators: [Validators.required] }),
       strength: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
       purchasedCountry: fb.control<Country | null>(null, { nonNullable: true, validators: [Validators.required] }),
+      lotNumber: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
       sameCountryReport: fb.control<SameCountryReportStatus | null>(null, { nonNullable: true, validators: [Validators.required] }),
       reportedCountry: fb.control<Country | null>(null, { nonNullable: true, validators: [] }),
       // productImage: fb.control<string>("", { nonNullable: true, validators: [] }),
@@ -267,7 +289,7 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
             postalCode: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
             state: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
             telephone: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-            emailAddress: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            emailAddress: fb.control<string>("", { nonNullable: true, validators: [Validators.required, Validators.pattern('[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$')] }),
           }),
           dateOfBirth: fb.control<DateTime>(DateTime.fromObject({ year: 1980, month: 1, day: 1 }), { nonNullable: true, validators: [Validators.required] }),
           ageAtComplaint: fb.control<string>("", { nonNullable: true, validators: [] }),
@@ -278,6 +300,21 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
         awareOfComplaint: fb.control<PhysicianAwareness | null>(null, { nonNullable: true, validators: [Validators.required] }),
         permissionToContact: fb.control<ContactPermission | null>(null, { nonNullable: true, validators: [Validators.required] }),
         permissionToContactHCP: fb.control<ContactPermissionHCP | null>(null, { nonNullable: true, validators: [Validators.required] }),
+        hcp: fb.group<FormGroupType<IHCPDetails>>({
+          title: fb.control<Title | null>(null, { nonNullable: true, validators: [Validators.required] }),
+          firstName: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+          lastName: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+          contactInformation: fb.group<FormGroupType<IContactInformation>>({
+            addressLine1: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            addressLine2: fb.control<string>("", { nonNullable: true, validators: [] }),
+            city: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            country: fb.control<Country | null>(null, { nonNullable: true, validators: [Validators.required] }),
+            postalCode: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            state: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            telephone: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            emailAddress: fb.control<string>("", { nonNullable: true, validators: [Validators.required, Validators.pattern('[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$')] }),
+          }),
+        }),
         patientMedicalHistory: fb.group<FormGroupType<IPatientMedicalHistory>>({
           medicalHistory: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
           allergies: fb.control<AllergyStatus | null>(null, { nonNullable: true, validators: [Validators.required] }),
@@ -305,7 +342,7 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
             postalCode: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
             state: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
             telephone: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-            emailAddress: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            emailAddress: fb.control<string>("", { nonNullable: true, validators: [Validators.required, Validators.pattern('[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$')] }),
           }),
           dateOfBirth: fb.control<DateTime>(DateTime.fromObject({ year: 1980, month: 1, day: 1 }), { nonNullable: true, validators: [Validators.required] }),
           ageAtComplaint: fb.control<string>("", { nonNullable: true, validators: [] }),
@@ -325,7 +362,7 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
             postalCode: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
             state: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
             telephone: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-            emailAddress: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            emailAddress: fb.control<string>("", { nonNullable: true, validators: [Validators.required, Validators.pattern('[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$')] }),
           }),
         }),
         facilityName: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
@@ -345,28 +382,27 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
       }),
     });
 
-    this.productDetailsFormGroup = fb.group<FormGroupType<IProductDetails>>({
-      tookProductAsDirected: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-      administeredBy: fb.control<AdministeredBy | null>(null, { nonNullable: true, validators: [Validators.required] }),
-      concomitantMedication: fb.group<FormGroupType<ConcomitantMedication>>({
-        status: fb.control<ConcomitantMedicationStatus | null>(null, { nonNullable: true, validators: [Validators.required] }),
-        details: fb.group<FormGroupType<ConcomitantMedicationDetails>>({
-          productName: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          formulation: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          indication: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          routeOfAdministration: fb.control<RouteOfAdministration | null>(null, { nonNullable: true, validators: [Validators.required] }),
-          startDate: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          endDate: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          dose: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          strength: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          frequency: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          frequencyTime: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-          optionalImage: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
-        }),
-      })
-    });
-
     this.complaintDetailsFormGroup = fb.group<FormGroupType<IComplaintDetails>>({
+      product: fb.group<FormGroupType<IProductDetails>>({
+        tookProductAsDirected: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+        administeredBy: fb.control<AdministeredBy | null>(null, { nonNullable: true, validators: [Validators.required] }),
+        concomitantMedication: fb.group<FormGroupType<ConcomitantMedication>>({
+          status: fb.control<ConcomitantMedicationStatus | null>(null, { nonNullable: true, validators: [Validators.required] }),
+          details: fb.group<FormGroupType<ConcomitantMedicationDetails>>({
+            productName: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            formulation: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            indication: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            routeOfAdministration: fb.control<RouteOfAdministration | null>(null, { nonNullable: true, validators: [Validators.required] }),
+            startDate: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            endDate: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            dose: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            strength: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            frequency: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            frequencyTime: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+            optionalImage: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
+          })
+        })
+      }),
       reportedFromJNJProgram: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
       studyProgram: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
       siteNumber: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
@@ -615,6 +651,10 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
 
   ngOnInit() {}
 
+  onTabsChange() {
+    this.complaintReportingFormGroup.controls.product.setValue(null);
+  }
+
   private _filterGroup(value: string): StateGroup[] {
     if (value) {
       return this.stateGroups
@@ -635,6 +675,7 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
 
   nextStep() {
     const selectedReportType = this.complaintReportingFormGroup.controls.complaintReportType.value;
+    console.log(selectedReportType)
 
     if (selectedReportType?.includes(this.ComplaintReportTypes.AdverseEvent)) {
       this.showMedicalHistory = true;

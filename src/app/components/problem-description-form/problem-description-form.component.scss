@@ -90,3 +90,35 @@ h2 {
     }
   }
 }
+
+.language-selector {
+  p {
+    width: 40%;
+  }
+  div {
+    width: 50%;
+  }
+}
+
+@media (max-width: 992px) {
+  .language-selector {
+    p {
+      width: 60%;
+    }
+    div {
+      width: 60%;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .language-selector {
+    p {
+      width: 100%;
+    }
+    div {
+      width: 100%;
+    }
+  }
+}
+

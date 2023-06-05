@@ -20,14 +20,16 @@ export interface IInitialReporting {
 export interface IComplaintReporting {
   complaintReportType: ComplaintReportTypes | null;
 
-  product: string;
-  brand: string;
+  product: ProductTypes | null;
+  brand: ProductTypes | null;
   strength: string;
   purchasedCountry: Country | null;
 
+  lotNumber: string;
+
   sameCountryReport: SameCountryReportStatus | null;
 
-  reportedCountry: Country | null;
+  reportedCountry?: Country | null;
   // productImage: string;
 }
 
@@ -35,7 +37,6 @@ export interface IUserDetails {
   userType: UserTypes | null;
   patientInformation: IPatientInformation;
   patientReporterInformation: IPatientReporterInformation;
-  // patientInformation?: IPatientInformation;
   // reporterInformation?: IPatientReporterInformation | null;
 }
 
@@ -44,6 +45,7 @@ export interface IPatientInformation {
   awareOfComplaint: PhysicianAwareness | null;
   permissionToContact: ContactPermission | null;
   permissionToContactHCP: ContactPermissionHCP | null;
+  hcp: IHCPDetails;
 
   patientMedicalHistory: IPatientMedicalHistory;
 }
@@ -52,7 +54,6 @@ export interface IPatientReporterInformation {
   patient: IPatientDetails;
   reporter: IReporterDetails;
   facilityName: string;
-  // facilityName?: string;
   reporterAdministeredProduct: ReporterAdministration | null;
   permissionToContactReporter: ContactPermissionReporter | null;
 
@@ -64,15 +65,11 @@ export interface IPatientDetails {
   firstName: string;
   lastName: string;
   occupation: string;
-  // occupation?: string;
   contactInformation: IContactInformation;
   dateOfBirth: DateTime;
   ageAtComplaint: string;
   height: string;
   weight: string;
-  // ageAtComplaint?: string;
-  // height?: string;
-  // weight?: string;
   gender: Gender | null;
 }
 
@@ -83,10 +80,16 @@ export interface IReporterDetails {
   contactInformation: IContactInformation;
 }
 
+export interface IHCPDetails {
+  title: Title | null;
+  firstName: string;
+  lastName: string;
+  contactInformation: IContactInformation;
+}
+
 export interface IContactInformation {
   addressLine1: string;
   addressLine2: string;
-  // addressLine2?: string;
   city: string;
   country: Country | null;
   postalCode: string;
@@ -99,16 +102,12 @@ export interface IPatientMedicalHistory {
   medicalHistory: string;
   allergies: AllergyStatus | null;
   allergyDetails: string;
-  // allergyDetails?: string;
   drugAbuse: DrugAbuseStatus | null;
   drugAbuseDetails: string;
-  // drugAbuseDetails?: string;
   alcoholConsumption: AlcoholConsumptionStatus | null;
   alcoholConsumptionDetails: string;
-  // alcoholConsumptionDetails?: string;
   smokingStatus: SmokingStatus | null;
   smokingDetails: string;
-  // smokingDetails?: string | null;
 }
 
 export interface IProductDetails  {
@@ -119,14 +118,12 @@ export interface IProductDetails  {
 }
 
 export interface IComplaintDetails {
+  product: IProductDetails;
   reportedFromJNJProgram: string;
 
   studyProgram: string;
   siteNumber: string;
   subjectNumber: string;
-  // studyProgram?: string;
-  // siteNumber?: string;
-  // subjectNumber?: string;
 
   complaintDescription: string;
 }
@@ -195,7 +192,21 @@ export enum UserTypes {
 export enum ComplaintReportTypes {
     ProductQualityComplaint = "productQualityComplaint",
     AdverseEvent = "adverseEvent",
-    HelpWithAProduct = "helpWithAProduct"
+    ProductInformation = "productInformation"
+}
+
+export enum ProductTypes {
+    OnePressDevice = "onePressDevice",
+    PrefilledSyringe = "prefilledSyringe",
+    Autoinjector = "autoinjector",
+    Spray = "spray",
+    Tablet = "tablet",
+    Vial = "vial",
+    InjectionKit = "injectionKit",
+    Cream = "cream",
+    Patch = "patch",
+    Ampule = "ampule",
+    Other = "other"
 }
 
 export enum AdministeredBy {

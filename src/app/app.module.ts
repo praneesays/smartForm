@@ -1,8 +1,6 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { LuxonDateAdapter, MatLuxonDateModule } from '@angular/material-luxon-adapter';
-import { DateAdapter } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,7 +19,11 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ProblemDescriptionFormComponent } from './components/problem-description-form/problem-description-form.component';
 import { LocaleSelectorModalComponent } from './modals/locale-selector-modal/locale-selector-modal.component';
 import { LocaleSelectorComponent } from './components/locale-selector/locale-selector.component';
+import { LuxonDateAdapter, MatLuxonDateModule } from '@angular/material-luxon-adapter';
+import { DateAdapter } from '@angular/material/core';
+import { Router } from '@angular/router';
 import { tokenRouterListener } from './shared/token.router.listener';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { tokenRouterListener } from './shared/token.router.listener';
     BrowserAnimationsModule,
     MaterialModule,
     MatLuxonDateModule,
+    NgOptimizedImage,
     NgCircleProgressModule.forRoot({
       radius: 100,
       outerStrokeWidth: 16,
@@ -55,7 +58,8 @@ import { tokenRouterListener } from './shared/token.router.listener';
       outerStrokeColor: "#78C000",
       innerStrokeColor: "#C7E596",
       animationDuration: 300
-    })
+    }),
+    NgbModule
   ],
   providers: [
     {
