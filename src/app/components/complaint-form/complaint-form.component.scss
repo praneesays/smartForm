@@ -197,10 +197,17 @@ mat-expansion-panel-header.invalid {
         font-size: 16px;
       }
     }
-    &.nav-pills .nav-link.active {
-      border: 1px solid $primary-color;
-      color: $primary-color;
-      background-color: #eef6ff;
+    &.nav-pills .nav-link {
+      // background-color: #f4f3f6;
+
+      &.active {
+        // border: 1px solid $primary-color;
+        // color: $primary-color;
+        // background-color: #eef6ff;
+        // border: 1px solid $primary-color;
+        color: #fff;
+        background-color: $primary-color;
+      }
     }
   }
 

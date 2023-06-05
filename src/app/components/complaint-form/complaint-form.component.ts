@@ -263,7 +263,7 @@ export class ComplaintFormComponent implements OnDestroy, OnInit {
       complaintReportType: fb.control<ComplaintReportTypes | null>(null, { nonNullable: true, validators: [Validators.required] }),
 
       product: fb.control<ProductTypes | null>(null, { nonNullable: true, validators: [Validators.required] }),
-      brand: fb.control<ProductTypes | null>(ProductTypes.OnePressDevice, { nonNullable: true, validators: [Validators.required] }),
+      // brand: fb.control<ProductTypes | null>(ProductTypes.OnePressDevice, { nonNullable: true, validators: [Validators.required] }),
       strength: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),
       purchasedCountry: fb.control<Country | null>(null, { nonNullable: true, validators: [Validators.required] }),
       lotNumber: fb.control<string>("", { nonNullable: true, validators: [Validators.required] }),

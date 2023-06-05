@@ -21,7 +21,7 @@ export interface IComplaintReporting {
   complaintReportType: ComplaintReportTypes | null;
 
   product: ProductTypes | null;
-  brand: ProductTypes | null;
+  // brand: ProductTypes | null;
   strength: string;
   purchasedCountry: Country | null;
 
